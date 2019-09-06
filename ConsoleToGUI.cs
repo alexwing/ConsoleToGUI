@@ -7,6 +7,7 @@
         private string output;
         private string stack;
         private Vector2 scrollPosition;
+        public bool ShowStack = true;
         void OnEnable()
         {
             Application.logMessageReceived += Log;
@@ -22,10 +23,16 @@
             output = logString;
             stack = stackTrace;
             myLog = output + "\n" + myLog;
+            if (stack.Length > 0 && ShowStack)
+            {
+                myLog = stack + "\n" + myLog;
+            }
             if (myLog.Length > 5000)
             {
                 myLog = myLog.Substring(0, 4000);
+               
             }
+            
             scrollPosition = new Vector2(scrollPosition.x, Mathf.Infinity);
     }
 
