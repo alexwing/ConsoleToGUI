@@ -7,7 +7,7 @@ public class ConsoleToGUI : MonoBehaviour
     static string myLog = "";
     private string output;
     private string stack;
-    private Vector2 scrollPosition; 
+    private Vector2 scrollPosition;
     [Tooltip("Show/hide Stack Trace in Log")]
     public bool ShowStack = true;
     [Tooltip("Number of characters that can be displayed")]
@@ -19,25 +19,35 @@ public class ConsoleToGUI : MonoBehaviour
     [Tooltip("Save file with log")]
     public bool SaveLogFile = true;
 
-
+    private bool DisplayInUi = false;
     private bool exitClicked = false;
     private bool ShowLog = true;
-    
-    public string logPath ="";
+
+    public string logPath = "";
+    public bool logPathInApplicationPath = true;
+
 
     private void Start()
     {
-        logPath =  Utils.GetPath() + "/Log";
+        if (logPathInApplicationPath)
+        {
+            logPath = Utils.GetAppPath() + "Log";
+        }
+        else
+        {
+            logPath = Utils.GetPath() + "/Log";
+        }
+
         EvaluatePath();
     }
     private void EvaluatePath()
     {
 
-            if (!Directory.Exists(logPath))
-                Directory.CreateDirectory(logPath);
+        if (!Directory.Exists(logPath))
+            Directory.CreateDirectory(logPath);
 
-            Debug.Log("Log path in: " + logPath);
-        
+        Debug.Log("Log path in: " + logPath);
+
     }
 
     void OnEnable()
@@ -52,10 +62,10 @@ public class ConsoleToGUI : MonoBehaviour
 
     public void WriteLog(string logString)
     {
-  
+
         if (logPath != "" && SaveLogFile)
         {
-            TextWriter tw = new StreamWriter(logPath + "\\log.txt",true);
+            TextWriter tw = new StreamWriter(logPath + "\\log.txt", true);
             tw.WriteLine(logString);
             tw.Close();
         }
@@ -64,9 +74,9 @@ public class ConsoleToGUI : MonoBehaviour
     {
         output = logString;
         stack = stackTrace;
- 
+
         // write a line of text to the file
-       
+
 
         // close the stream
 
@@ -92,48 +102,52 @@ public class ConsoleToGUI : MonoBehaviour
 
 
 
-        
+
 
         scrollPosition = new Vector2(scrollPosition.x, 0);
     }
 
     void OnGUI()
     {
-        if (!Application.isEditor || ! OnlyInEditor) //Do not display in editor ( or you can use the UNITY_EDITOR macro to also disable the rest)
+        if (DisplayInUi)
         {
-            if (GUI.Button(new Rect(new Rect(10, Screen.height - LogHeight - 40, 100, 40)), "L"))
-                exitClicked = true;
-
-            if (ShowLog) {
-
-                if (GUI.Button(new Rect(new Rect(130, Screen.height - LogHeight - 40, 100, 40)), "S"))
-                {
-                    ShowStack = !ShowStack;
-                }
-                if (GUI.Button(new Rect(new Rect(250, Screen.height - LogHeight - 40, 100, 40)), "C"))
-                {
-                    myLog = "";
-                }
-                // we want to place the TextArea in a particular location - use BeginArea and provide Rect
-                GUILayout.BeginArea(new Rect(10, Screen.height - LogHeight, Screen.width - 20, Screen.height - 10));
-            scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width - 20), GUILayout.Height(LogHeight));
-
-            // We just add a single label to go inside the scroll view. Note how the
-            // scrollbars will work correctly with wordwrap.
-            GUILayout.TextArea(myLog);
-
-            // End the scrollview we began above.
-            GUILayout.EndScrollView();
-            GUILayout.EndArea();
-
-            }
-
-            if (exitClicked)
+            if (!Application.isEditor || !OnlyInEditor) //Do not display in editor ( or you can use the UNITY_EDITOR macro to also disable the rest)
             {
-                ShowLog = !ShowLog;
-                exitClicked = false;
-            }
+                if (GUI.Button(new Rect(new Rect(10, Screen.height - LogHeight - 40, 100, 40)), "L"))
+                    exitClicked = true;
 
+                if (ShowLog)
+                {
+
+                    if (GUI.Button(new Rect(new Rect(130, Screen.height - LogHeight - 40, 100, 40)), "S"))
+                    {
+                        ShowStack = !ShowStack;
+                    }
+                    if (GUI.Button(new Rect(new Rect(250, Screen.height - LogHeight - 40, 100, 40)), "C"))
+                    {
+                        myLog = "";
+                    }
+                    // we want to place the TextArea in a particular location - use BeginArea and provide Rect
+                    GUILayout.BeginArea(new Rect(10, Screen.height - LogHeight, Screen.width - 20, Screen.height - 10));
+                    scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width - 20), GUILayout.Height(LogHeight));
+
+                    // We just add a single label to go inside the scroll view. Note how the
+                    // scrollbars will work correctly with wordwrap.
+                    GUILayout.TextArea(myLog);
+
+                    // End the scrollview we began above.
+                    GUILayout.EndScrollView();
+                    GUILayout.EndArea();
+
+                }
+
+                if (exitClicked)
+                {
+                    ShowLog = !ShowLog;
+                    exitClicked = false;
+                }
+
+            }
         }
     }
     //#endif
