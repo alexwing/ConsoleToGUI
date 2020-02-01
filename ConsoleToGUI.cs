@@ -19,7 +19,7 @@ public class ConsoleToGUI : MonoBehaviour
     [Tooltip("Save file with log")]
     public bool SaveLogFile = true;
 
-    private bool DisplayInUi = false;
+    public bool DisplayInUi = false;
     private bool exitClicked = false;
     private bool ShowLog = true;
 
