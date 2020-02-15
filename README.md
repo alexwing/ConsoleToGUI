@@ -8,6 +8,12 @@ Simple Unity Debug.Log to Screen scroll text box
 - Vervose Debug with stacktrace
 - Display in UI or silent mode.
 
+## Others
+
+- FPSDisplay.cs for display framerate on UI
+- FlyCamera.csm for simple wasd and mouse camera control for test scenes
+- Utils.cs some useful functions
+
 
 ## Use 
 
