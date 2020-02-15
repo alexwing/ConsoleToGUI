@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using UnityEngine;
 
 public class ConsoleToGUI : MonoBehaviour
@@ -31,7 +31,7 @@ public class ConsoleToGUI : MonoBehaviour
     {
         if (logPathInApplicationPath)
         {
-            logPath = Utils.GetAppPath() + "Log";
+            logPath = Utils.GetAppPath() + "/Log";
         }
         else
         {
@@ -65,7 +65,7 @@ public class ConsoleToGUI : MonoBehaviour
 
         if (logPath != "" && SaveLogFile)
         {
-            TextWriter tw = new StreamWriter(logPath + "\\log.txt", true);
+            TextWriter tw = new StreamWriter(logPath + "/log.txt", true);
             tw.WriteLine(logString);
             tw.Close();
         }
@@ -85,13 +85,13 @@ public class ConsoleToGUI : MonoBehaviour
         if (stack.Length > 0 && ShowStack)
         {
             myLog = stack + "\n" + myLog;
-            WriteLog(output + "\n" + stack + "\n");
+            WriteLog(System.DateTime.Now.ToString("yyyyMMddHHmmss") + ": " + output + "\n" + stack + "\n");
 
 
         }
         else
         {
-            WriteLog(output + "\n");
+            WriteLog(System.DateTime.Now.ToString("yyyyMMddHHmmss") + ": " + output + "\n");
 
         }
         if (myLog.Length > LogBuffer)
