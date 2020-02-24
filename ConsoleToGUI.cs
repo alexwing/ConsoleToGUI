@@ -26,6 +26,8 @@ public class ConsoleToGUI : MonoBehaviour
     public string logPath = "";
     public bool logPathInApplicationPath = true;
 
+    public int FontLogSize = 25;
+
 
     private void Start()
     {
@@ -133,7 +135,10 @@ public class ConsoleToGUI : MonoBehaviour
 
                     // We just add a single label to go inside the scroll view. Note how the
                     // scrollbars will work correctly with wordwrap.
-                    GUILayout.TextArea(myLog);
+                    GUIStyle textStyle = new GUIStyle(GUI.skin.textArea);
+                    textStyle.fontSize = FontLogSize;
+
+                    GUILayout.TextArea(myLog, textStyle);
 
                     // End the scrollview we began above.
                     GUILayout.EndScrollView();
