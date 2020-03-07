@@ -10,6 +10,8 @@ public class ConsoleToGUI : MonoBehaviour
     private Vector2 scrollPosition;
     [Tooltip("Show/hide Stack Trace in Log")]
     public bool ShowStack = true;
+    [Tooltip("Show/hide FPS Count")]
+    public bool ShowFPS = true;
     [Tooltip("Number of characters that can be displayed")]
     public int LogBuffer = 5000;
     [Tooltip("Log Height on Buttom Screen")]
@@ -21,11 +23,15 @@ public class ConsoleToGUI : MonoBehaviour
 
     public bool DisplayInUi = false;
     private bool exitClicked = false;
-    private bool ShowLog = true;
+    [Tooltip("Log textbox show on start")]
+    public bool ShowLog = true;
 
     public string logPath = "";
     public bool logPathInApplicationPath = true;
+    private float deltaTime = 0.0f;
 
+
+    [Tooltip("Font log size")]
     public int FontLogSize = 25;
 
 
@@ -61,7 +67,11 @@ public class ConsoleToGUI : MonoBehaviour
     {
         Application.logMessageReceived -= Log;
     }
-
+    void Update()
+    {
+        if(ShowFPS && ShowLog)
+        deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
+    }
     public void WriteLog(string logString)
     {
 
@@ -129,6 +139,10 @@ public class ConsoleToGUI : MonoBehaviour
                     {
                         myLog = "";
                     }
+
+
+                       
+
                     // we want to place the TextArea in a particular location - use BeginArea and provide Rect
                     GUILayout.BeginArea(new Rect(10, Screen.height - LogHeight, Screen.width - 20, Screen.height - 10));
                     scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width - 20), GUILayout.Height(LogHeight));
@@ -143,6 +157,13 @@ public class ConsoleToGUI : MonoBehaviour
                     // End the scrollview we began above.
                     GUILayout.EndScrollView();
                     GUILayout.EndArea();
+
+                    if (ShowFPS)
+                    {
+                        string FPS = string.Format("{0:0.0} ms ({1:0.} fps)", deltaTime * 1000.0f, 1.0f / deltaTime);
+                        GUI.Label(new Rect(new Rect(370, Screen.height - LogHeight - 40, 250, 40)), FPS, textStyle);
+                    }
+
 
                 }
 
