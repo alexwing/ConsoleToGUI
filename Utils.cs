@@ -73,7 +73,7 @@ public class Utils
         {
         "/storage/emulated/0",
         "/sdcard",
-        "/storage",        
+        "/storage",
         "/storage/emulated/0",
         "/mnt/sdcard",
         "/storage/sdcard0",
@@ -196,10 +196,36 @@ public class Utils
         Color output = Color.black;
         for (var i = 0; i < strings.Length; i++)
         {
-            output[i] = StringToFloat(strings[i])/256;
+            output[i] = StringToFloat(strings[i]) / 256;
+        }
+        return output;
+    }
+    public static Material[] MergeMaterialsArray(Material[] input1, Material[] input2)
+    {
+        Material[] output = new Material[input1.Length + input2.Length];
+        for (int i = 0; i < output.Length; i++)
+        {
+            if (i >= input1.Length)
+                output[i] = input2[i - input1.Length];
+            else
+                output[i] = input1[i];
         }
         return output;
     }
 
+    /// <summary>
+    /// returns if the class exists in the current context
+    /// </summary>
+    /// <param name="className">Class Name</param>
+    /// <returns>class status</returns>
+    public static bool ClassExist(string className)
+    {
+        Type type = Type.GetType(className);
+        if (type != null)
+        {
+            return true;
+        }
+        return false;
+    }
 
 }
