@@ -61,11 +61,13 @@ public class ConsoleToGUI : MonoBehaviour
     void OnEnable()
     {
         Application.logMessageReceived += Log;
+        Application.logMessageReceivedThreaded += Log;
     }
 
     void OnDisable()
     {
         Application.logMessageReceived -= Log;
+        Application.logMessageReceivedThreaded -= Log;
     }
     void Update()
     {
