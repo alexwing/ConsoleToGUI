@@ -2,7 +2,7 @@
 
 ![Step](./Res/capture.png)
 
-Simple Unity Debug.Log to Screen scroll text box
+Small script to generate a log file with all the information from the Unity Debug.Log console, it also includes the option to show a Textbox Log in aplication UI.
 
 ## Features
 
