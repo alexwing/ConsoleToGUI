@@ -1,5 +1,7 @@
 # ConsoleToGUI
 
+![Step](./Res/capture.png)
+
 Simple Unity Debug.Log to Screen scroll text box
 
 ## Features
