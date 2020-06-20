@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Runtime.Serialization.Json;
 using UnityEngine;
 
 public class Utils
@@ -32,6 +31,27 @@ public class Utils
         //   float valueFloat = (float)System.Convert.ToDouble(Value);
         // float valueFloat = float.Parse(Value);
         return valueInt;
+    }
+
+    public static Vector2 StringToVector2(string aCol)
+    {
+        try
+        {
+            var strings = aCol.Split(',');
+            Vector2 vector = new Vector2()
+            {
+                x = StringToFloat(strings[0]),
+                y = StringToFloat(strings[1])
+            };
+
+            return vector;
+
+        }
+        catch (Exception e)
+        {
+            Debug.Log("StringToVector2 invalid format: " + e.ToString());
+            return new Vector2(0, 0);
+        }
     }
 
     public static string GetPath()
@@ -99,7 +119,7 @@ public class Utils
         string retVal = String.Empty;
         using (MemoryStream ms = new MemoryStream())
         {
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
+            System.Runtime.Serialization.Json.DataContractJsonSerializer serializer = new System.Runtime.Serialization.Json.DataContractJsonSerializer(obj.GetType());
             serializer.WriteObject(ms, obj);
             var byteArray = ms.ToArray();
             retVal = System.Text.Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
@@ -200,6 +220,8 @@ public class Utils
         }
         return output;
     }
+
+
     public static Material[] MergeMaterialsArray(Material[] input1, Material[] input2)
     {
         Material[] output = new Material[input1.Length + input2.Length];
@@ -228,4 +250,33 @@ public class Utils
         return false;
     }
 
+
+    private string MD5Checksum(string path)
+    {
+
+        if (!File.Exists(path))
+        {
+            return "";
+        }
+
+
+        using (var md5 = System.Security.Cryptography.MD5.Create())
+        {
+            using (var stream = File.OpenRead(path))
+            {
+                return BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", String.Empty);
+            }
+        }
+    }
+
+    public static string GetGameObjectPath(Transform transform)
+    {
+        string path = transform.name;
+        while (transform.parent != null)
+        {
+            transform = transform.parent;
+            path = transform.name + "/" + path;
+        }
+        return path;
+    }
 }
