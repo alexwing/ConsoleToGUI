@@ -71,8 +71,8 @@ public class ConsoleToGUI : MonoBehaviour
     }
     void Update()
     {
-        if(ShowFPS && ShowLog)
-        deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
+        if (ShowFPS && ShowLog)
+            deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
     }
     public void WriteLog(string logString)
     {
@@ -143,18 +143,18 @@ public class ConsoleToGUI : MonoBehaviour
                     }
 
 
-                       
+
 
                     // we want to place the TextArea in a particular location - use BeginArea and provide Rect
-                    GUILayout.BeginArea(new Rect(10, Screen.height - LogHeight, Screen.width - 20, Screen.height - 10));
-                    scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width - 20), GUILayout.Height(LogHeight));
-
+                    GUILayout.BeginArea(new Rect(10, Screen.height - LogHeight, Screen.width - 40, Screen.height - 10));
+                    scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(Screen.width - 40), GUILayout.Height(LogHeight));
                     // We just add a single label to go inside the scroll view. Note how the
                     // scrollbars will work correctly with wordwrap.
+
                     GUIStyle textStyle = new GUIStyle(GUI.skin.textArea);
                     textStyle.fontSize = FontLogSize;
-
-                    GUILayout.TextArea(myLog, textStyle);
+                   // GUILayout.TextArea(myLog, textStyle);
+                    GUILayout.Label(myLog, textStyle);
 
                     // End the scrollview we began above.
                     GUILayout.EndScrollView();
