@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public class Utils
@@ -31,6 +32,20 @@ public class Utils
         //   float valueFloat = (float)System.Convert.ToDouble(Value);
         // float valueFloat = float.Parse(Value);
         return valueInt;
+    }
+
+    public static int[] StringToIntArray(string s1, char separator = ',')
+    {
+        try
+        {
+            return s1.Split(separator).Select(n => Convert.ToInt32(n)).ToArray();
+        }
+        catch (Exception e)
+        {
+            Debug.Log("StringToIntArray invalid format: " + e.ToString());
+            return new int[0];
+        }
+
     }
 
     public static Vector2 StringToVector2(string aCol)
