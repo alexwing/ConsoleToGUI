@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class Utils
 {
+
+
+    private static string androidInternalFilesDir = null;
+
     // Start is called before the first frame update
     public static float StringToFloat(string Value)
     {
@@ -34,6 +38,13 @@ public class Utils
         return valueInt;
     }
 
+
+    /// <summary>
+    /// Convert string to array int
+    /// </summary>
+    /// <param name="s1">String of numbers</param>
+    /// <param name="separator">Character to sprit in array</param>
+    /// <returns></returns>
     public static int[] StringToIntArray(string s1, char separator = ',')
     {
         try
@@ -104,28 +115,36 @@ public class Utils
 
     public static string GetAndroidInternalFilesDir()
     {
-        string[] potentialDirectories = new string[]
+
+        if (androidInternalFilesDir is null)
         {
-        "/storage/emulated/0",
+
+            string[] potentialDirectories = new string[]
+            {
+        "/mnt/sdcard",
         "/sdcard",
         "/storage",
         "/storage/emulated/0",
-        "/mnt/sdcard",
         "/storage/sdcard0",
         "/storage/sdcard1"
-        };
+            };
 
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            for (int i = 0; i < potentialDirectories.Length; i++)
+            if (Application.platform == RuntimePlatform.Android)
             {
-                if (Directory.Exists(potentialDirectories[i]))
+                for (int i = 0; i < potentialDirectories.Length; i++)
                 {
-                    return potentialDirectories[i];
+                    if (Directory.Exists(potentialDirectories[i]))
+                    {
+                        return potentialDirectories[i];
+                    }
                 }
             }
+            return "";
         }
-        return "";
+        else
+        {
+            return androidInternalFilesDir;
+        }
     }
 
 
@@ -294,4 +313,100 @@ public class Utils
         }
         return path;
     }
+
+    /// <summary>
+    /// returns if the gameobject is visible in camera
+    /// </summary>
+    /// <param name="c">Camera</param>
+    /// <param name="go">GameObject</param>
+    /// <returns>state of visibility</returns>
+    public static bool IsTargetVisible(Camera c, GameObject go)
+    {
+        var planes = GeometryUtility.CalculateFrustumPlanes(c);
+        var point = go.transform.position;
+        foreach (var plane in planes)
+        {
+            if (plane.GetDistanceToPoint(point) < 0)
+                return false;
+        }
+        return true;
+    }
+
+
+    /// <summary>
+    /// returns if the gameobject is looking to other
+    /// </summary>
+    /// <param name="c">looker</param>
+    /// <param name="go">targetPos</param>
+    /// <returns>state of visibility</returns>
+    public static bool IsLookingAtObject(Transform looker, Transform targetPos)
+    {
+        Vector3 dirFromAtoB = (looker.transform.position - targetPos.transform.position).normalized;
+        float dotProd = Vector3.Dot(dirFromAtoB, targetPos.transform.forward);
+
+        if (dotProd > 0.9)
+        {
+            return true;
+        }
+        return false;
+    }
+
+
+    /// <summary>
+    /// returns if the gameobject is front to other
+    /// </summary>
+    /// <param name="obj1">obj1</param>
+    /// <param name="obj2">obj2</param>
+    /// <returns>is object is from as her pivot</returns>
+    public static bool IsFrontAtObject(Transform obj1, Transform obj2)
+    {
+        if (Vector3.Dot(Vector3.forward, obj1.transform.InverseTransformPoint(obj2.transform.position)) < 0)
+            return true;
+        else
+            return false;
+
+    }
+
+
+    public static String GetWifiMAC()
+    {
+
+        string mac = "";
+        var card = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces().FirstOrDefault();
+        if (card == null)
+        {
+            return "";
+        }
+        else
+        {
+            byte[] bytes = card.GetPhysicalAddress().GetAddressBytes();
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                mac = string.Concat(mac + (string.Format("{0}", bytes[i].ToString("X2"))));
+                if (i != bytes.Length - 1)
+                {
+                    //This is just for formating the final result
+                    mac = string.Concat(mac + ":");
+                }
+            }
+            mac = card.GetPhysicalAddress().ToString();
+          //  Debug.Log("WIFI OK, MAC: " + mac);
+            return mac;
+        }
+
+    }
+
+    public static bool IsWifiConnect()
+    {
+        if (Application.internetReachability != NetworkReachability.NotReachable)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
 }
