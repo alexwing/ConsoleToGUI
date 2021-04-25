@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Utils
 {
@@ -28,14 +29,31 @@ public class Utils
     public static int StringToInt(string Value)
     {
         //  Value = Value.Replace(".", ",");
+        try
+        {
+            if (!String.IsNullOrEmpty(Value) && Value != "Unknown")
+            {
 
-        CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
-        ci.NumberFormat.CurrencyDecimalSeparator = ".";
-        int valueInt = int.Parse(Value, NumberStyles.Any, ci);
 
-        //   float valueFloat = (float)System.Convert.ToDouble(Value);
-        // float valueFloat = float.Parse(Value);
-        return valueInt;
+                CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+                ci.NumberFormat.CurrencyDecimalSeparator = ".";
+                int valueInt = int.Parse(Value, NumberStyles.Any, ci);
+
+                //   float valueFloat = (float)System.Convert.ToDouble(Value);
+                // float valueFloat = float.Parse(Value);
+                return valueInt;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        catch (Exception exception)
+        {
+            Debug.LogError($"Utils -> StringToInt   {exception}  {exception.StackTrace}");
+            return 0;
+        }
+
     }
 
 
@@ -390,7 +408,7 @@ public class Utils
                 }
             }
             mac = card.GetPhysicalAddress().ToString();
-          //  Debug.Log("WIFI OK, MAC: " + mac);
+            //  Debug.Log("WIFI OK, MAC: " + mac);
             return mac;
         }
 
@@ -408,5 +426,74 @@ public class Utils
         }
     }
 
+    public static void ShowToastMessage(string message)
+    {
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+        AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+        AndroidJavaObject unityActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+
+        if (unityActivity != null)
+        {
+            AndroidJavaClass toastClass = new AndroidJavaClass("android.widget.Toast");
+            unityActivity.Call("runOnUiThread", new AndroidJavaRunnable(() =>
+            {
+                AndroidJavaObject toastObject = toastClass.CallStatic<AndroidJavaObject>("makeText", unityActivity, message, 0);
+                toastObject.Call("show");
+            }));
+        }
+#else
+        Debug.Log($"TOAST: {message}");
+#endif
+    }
+
+
+    /// <summary>
+    /// Ramdon from a initial position
+    /// </summary>
+    /// <param name="obj">obj</param>
+    /// <param name="XRange">XRange</param>
+    /// <param name="YRange">YRange</param>
+    /// <param name="ZRange">ZRange</param>
+    /// <returns>Return the randomized position</returns>
+    public static Transform RandomNearPosition(Transform obj, float XRange, float YRange, float ZRange, bool OnlyTopY = false)
+    {
+        if (OnlyTopY)
+        {
+            obj.position = new Vector3(
+                Random.Range(obj.position.x - (obj.position.x * XRange), obj.position.x + (obj.position.x * XRange)),
+                Random.Range(obj.position.y, obj.position.y + (obj.position.y * YRange * 5)),
+                Random.Range(obj.position.z - (obj.position.z * ZRange), obj.position.z + (obj.position.z * ZRange))
+                );
+        }
+        else
+        {
+            obj.position = new Vector3(
+                Random.Range(obj.position.x - (obj.position.x * XRange), obj.position.x + (obj.position.x * XRange)),
+                Random.Range(obj.position.y - (obj.position.y * YRange), obj.position.y + (obj.position.y * YRange)),
+                Random.Range(obj.position.z - (obj.position.z * ZRange), obj.position.z + (obj.position.z * ZRange))
+                );
+        }
+
+        return obj;
+    }
+
+    public static void PlaySound(AudioClip clip, Transform collision, Transform player, int DistanceSoundLimit)
+    {
+        float cameraDistance = Vector3.Distance(player.position, collision.position);
+
+
+        float normalizedValue = Mathf.InverseLerp(0, DistanceSoundLimit, cameraDistance);
+        float explosionDistanceVolumen = Mathf.Lerp(1f, 0, normalizedValue);
+        // First, calculate the direction to the spawn
+        Vector3 spawnDirection = collision.position - player.position;
+
+        // Then, normalize it into a unit vector
+        Vector3 unitSpawnDirection = spawnDirection.normalized;
+
+        Debug.Log("Camera distance: " + cameraDistance + " explosion sound volumen : " + explosionDistanceVolumen);
+        // Now, we can play the sound in the direction, but not position, of the spawn
+        AudioSource.PlayClipAtPoint(clip, player.position + unitSpawnDirection, explosionDistanceVolumen);
+    }
 
 }
