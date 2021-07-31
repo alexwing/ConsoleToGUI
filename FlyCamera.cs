@@ -3,16 +3,17 @@ using UnityEngine;
 public class FlyCamera : MonoBehaviour
 {
     /*
-    Writen by Windexglow 11-13-10.  Use it, edit it, steal it I don't care.  
-    Converted to C# 27-02-13 - no credit wanted.
+    Writen by Alexwing 2021, modify  Use it, edit it, steal it I don't care.  
+    based in Windexglow    
     Simple flycam I made, since I couldn't find any others made public. 
     Made simple to use (drag and drop, done) for regular keyboard layout  
+    Optional can anchor to terrain    
     WASD : basic movement
     SHIFT : Makes camera accelerate
-    SPACE : Moves camera on X and Z axis only.  So camera doesn't gain any height
+    Mouse : Mouse look
+    Scroll wheel : Height over terrain
+    mouse click right: set lock/unlock movement         
 	*/
-
-
 
 
     [Tooltip("The terrain to follow")]
