@@ -11,6 +11,9 @@ public class Utils
 
 
     private static string androidInternalFilesDir = null;
+    private static float clicked = 0;
+    private static float clicktime = 0;
+    private static float clickdelay = 0.5f;
 
     // Start is called before the first frame update
     public static float StringToFloat(string Value)
@@ -385,6 +388,14 @@ public class Utils
             return false;
 
     }
+    public static bool IsFrontAtObject(Transform obj1, Vector3 obj2)
+    {
+        if (Vector3.Dot(Vector3.forward, obj1.transform.InverseTransformPoint(obj2)) < 0)
+            return true;
+        else
+            return false;
+
+    }
 
 
     public static String GetWifiMAC()
@@ -472,66 +483,31 @@ public class Utils
     public static void PlaySound(AudioClip clip, Transform collision, Transform player, int DistanceSoundLimit)
     {
         float cameraDistance = Vector3.Distance(player.position, collision.position);
-
-
         float normalizedValue = Mathf.InverseLerp(0, DistanceSoundLimit, cameraDistance);
         float explosionDistanceVolumen = Mathf.Lerp(1f, 0, normalizedValue);
         // First, calculate the direction to the spawn
-        Vector3 spawnDirection = collision.position - player.position;
-
+        Vector3 spawnDirection = collision.position - player.position;        
         // Then, normalize it into a unit vector
         Vector3 unitSpawnDirection = spawnDirection.normalized;
 
-        Debug.Log("Camera distance: " + cameraDistance + " explosion sound volumen : " + explosionDistanceVolumen);
+        // Debug.Log("Camera distance: " + cameraDistance + " explosion sound volumen : " + explosionDistanceVolumen);
         // Now, we can play the sound in the direction, but not position, of the spawn
         AudioSource.PlayClipAtPoint(clip, player.position + unitSpawnDirection, explosionDistanceVolumen);
     }
 
-
-    public static Vector3 CreateRamdomPosition(Vector3 quad,  ref List<Vector3> otherPositions, float minimalDistanceBetween, int retries = 2000)
+    public static Vector3 CenterOfVectors(Vector3[] vectors)
     {
-        Vector3 position = new Vector3(0, 0, 0);
-        bool isInRange = false;
-        int retryCount = 0;
-        while (!isInRange)
+        Vector3 sum = Vector3.zero;
+        if (vectors == null || vectors.Length == 0)
         {
-            isInRange = true;
-         
-            //verify not in the same position with other hills with the hillSizeLimit
-            Vector3 auxPosition = new Vector3(0, 0, 0);
-            float auxDistance = 0;
-            position = new Vector3(Random.Range(quad.x,quad.y), 0, Random.Range(quad.y, quad.z));
-            for (int j = 0; j < otherPositions.Count; j++)
-            {
-                //verfiy not in the same position in hillSizeLimit range
-                float distance = Vector3.Distance(otherPositions[j], position);
-                if (distance < minimalDistanceBetween)
-                {
-                    isInRange = false;
-                    //if now position has a distance greater that before save in auxDistance
-                    if (distance > auxDistance)
-                    {
-                        auxDistance = distance;
-                        auxPosition = position;
-                    }
-                    //limit retry count
-                    if (retryCount > retries)
-                    {
-                        //restore element on more distance in retries
-                        position = auxPosition;
-
-                        isInRange = true;
-                        Debug.Log("Can't find a position for the hill with this hills Distance between: "+ auxDistance);             
-                    }
-                }
-            }
-            retryCount++;
+            return sum;
         }
 
-         
-        otherPositions.Add(position);
-        return position;
-
-    }    
+        foreach (Vector3 vec in vectors)
+        {
+            sum += vec;
+        }
+        return sum / vectors.Length;
+    }
 
 }
