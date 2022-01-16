@@ -39,13 +39,26 @@ public class Utils
             {
 
 
-        CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
-        ci.NumberFormat.CurrencyDecimalSeparator = ".";
-        int valueInt = int.Parse(Value, NumberStyles.Any, ci);
 
-        //   float valueFloat = (float)System.Convert.ToDouble(Value);
-        // float valueFloat = float.Parse(Value);
-        return valueInt;
+                CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+                ci.NumberFormat.CurrencyDecimalSeparator = ".";
+                int valueInt = int.Parse(Value, NumberStyles.Any, ci);
+
+                //   float valueFloat = (float)System.Convert.ToDouble(Value);
+                // float valueFloat = float.Parse(Value);
+                return valueInt;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        catch (Exception exception)
+        {
+            Debug.LogError($"Utils -> StringToInt   {exception}  {exception.StackTrace}");
+            return 0;
+        }
+
     }
             else
             {
@@ -420,7 +433,7 @@ public class Utils
                 }
             }
             mac = card.GetPhysicalAddress().ToString();
-          //  Debug.Log("WIFI OK, MAC: " + mac);
+            //  Debug.Log("WIFI OK, MAC: " + mac);
             return mac;
         }
 
