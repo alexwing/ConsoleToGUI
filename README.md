@@ -2,21 +2,21 @@
 
 ![Step](./Res/capture.png)
 
-Small script to generate a log file with all the information from the Unity Debug.Log console, it also includes the option to show a Textbox Log in aplication UI.
+This script is used to generate a log file with all the information from the Unity Debug.Log console. It also includes the option to show a Textbox Log in the application UI.
 
 ## Features
 
-- Create log file in app path o local resourses path
-- Vervose Debug with stacktrace
-- Display in UI or silent mode.
+- Create log file in app path or local resources path
+- Verbose debugging with stack trace
+- Display in UI or silent mode
 
 ## Others
 
-- FPSDisplay.cs for display framerate on UI
-- FlyCamera.csm for simple wasd and mouse camera control for test scenes
+- FPSDisplay.cs for displaying framerate on the UI
+- FlyCamera.cs for simple WASD and mouse camera control for test scenes
 - Utils.cs some useful functions
 
 
 ## Use 
 
-Copy to assets folder and add it to any gameobject
+To use this script, simply copy it to the assets folder and add it to any game object.
